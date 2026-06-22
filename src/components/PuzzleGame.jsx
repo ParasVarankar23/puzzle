@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { FaRedo, FaTrophy, FaClock, FaLightbulb, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaChevronDown, FaChevronUp, FaClock, FaLightbulb, FaRedo } from "react-icons/fa";
 
 const initialBoard = [1, 2, 3, 4, 5, 6, 7, 8, null];
 
@@ -12,10 +12,14 @@ export default function PuzzleGame() {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
     const [showRules, setShowRules] = useState(false);
-    const [bestScore, setBestScore] = useState(() => {
-        const saved = localStorage.getItem('puzzleBestScore');
-        return saved ? JSON.parse(saved) : { moves: Infinity, time: Infinity };
-    });
+    const [bestScore, setBestScore] = useState({ moves: Infinity, time: Infinity });
+
+    useEffect(() => {
+        const saved = window.localStorage.getItem('puzzleBestScore');
+        if (saved) {
+            setBestScore(JSON.parse(saved));
+        }
+    }, []);
 
     function shuffle(arr) {
         let shuffled = [...arr];
@@ -71,7 +75,7 @@ export default function PuzzleGame() {
                 if (moves + 1 < bestScore.moves) {
                     const newBest = { moves: moves + 1, time: timeElapsed };
                     setBestScore(newBest);
-                    localStorage.setItem('puzzleBestScore', JSON.stringify(newBest));
+                    window.localStorage.setItem('puzzleBestScore', JSON.stringify(newBest));
                 }
             }
         }
